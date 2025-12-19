@@ -1,12 +1,12 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { cache } from 'react';
 
 /**
- * Especially important if using Fluid compute: Don't put this client in a
- * global variable. Always create a new client within each function when using
- * it.
+ * Creates a Supabase client for use in Server Components.
+ * The client is configured to use cookies for auth state.
  */
-export async function createClient() {
+export const createClient = cache(async () => {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -20,15 +20,15 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, options)
             );
           } catch {
             // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have proxy refreshing
+            // This can be ignored if you have middleware refreshing
             // user sessions.
           }
         },
       },
-    },
+    }
   );
-}
+});
