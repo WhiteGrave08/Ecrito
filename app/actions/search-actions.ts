@@ -55,6 +55,7 @@ export async function searchBlogs(query: string, filters?: {
   const { data: blogs, error } = await dbQuery;
 
   if (error) {
+    console.error('Search error:', error);
     return { error: error.message };
   }
 
